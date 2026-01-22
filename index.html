@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Radio App</title>
+<title>Radio España</title>
 
 <style>
 :root {
@@ -21,7 +21,7 @@ body {
   font-family: system-ui, sans-serif;
   background: var(--bg);
   color: var(--text);
-  padding-bottom: 90px;
+  padding-bottom: 100px;
 }
 
 header {
@@ -30,18 +30,59 @@ header {
   font-weight: bold;
 }
 
-input {
-  width: 100%;
+.tabs {
+  display: flex;
+  gap: 10px;
+  padding: 0 16px 10px;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px;
+  background: var(--card);
+  border-radius: 12px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.tab.active {
+  background: var(--accent);
+  color: #000;
+  font-weight: bold;
+}
+
+.container {
+  padding: 16px;
+}
+
+.search-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+input, select {
+  flex: 1;
   padding: 12px;
   border-radius: 12px;
   border: none;
   background: var(--card);
   color: var(--text);
-  margin-bottom: 16px;
 }
 
-.container {
-  padding: 16px;
+button.search-btn {
+  padding: 12px 18px;
+  border-radius: 12px;
+  border: none;
+  background: var(--accent);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
 }
 
 .radio {
@@ -52,7 +93,6 @@ input {
   align-items: center;
   gap: 12px;
   margin-bottom: 12px;
-  cursor: pointer;
 }
 
 .radio img {
@@ -64,6 +104,7 @@ input {
 
 .radio-info {
   flex: 1;
+  cursor: pointer;
 }
 
 .radio-info h3 {
@@ -78,7 +119,7 @@ input {
 }
 
 .heart {
-  font-size: 20px;
+  font-size: 22px;
   cursor: pointer;
 }
 
@@ -114,24 +155,34 @@ input {
   font-size: 12px;
   color: red;
 }
-
-button {
-  background: var(--accent);
-  border: none;
-  border-radius: 999px;
-  padding: 10px 16px;
-  font-weight: bold;
-  cursor: pointer;
-}
 </style>
 </head>
 
 <body>
 
-<header>📻 Radio</header>
+<header>📻 Radios de España</header>
+
+<div class="tabs">
+  <div class="tab active" id="tab-all" onclick="setTab('all')">Inicio</div>
+  <div class="tab" id="tab-favs" onclick="setTab('favs')">Favoritas</div>
+</div>
 
 <div class="container">
-  <input type="text" id="search" placeholder="Buscar emisora..." oninput="render()" />
+
+  <div class="search-bar">
+    <input type="text" id="search" placeholder="Buscar emisora...">
+    <button class="search-btn" onclick="render()">Buscar</button>
+  </div>
+
+  <div class="filters">
+    <select id="comunidad" onchange="updateProvincias()">
+      <option value="">Comunidad</option>
+    </select>
+
+    <select id="provincia">
+      <option value="">Provincia</option>
+    </select>
+  </div>
 
   <div id="list"></div>
 </div>
@@ -149,49 +200,65 @@ button {
 
 <script>
 const radios = [
-  {
-    id: 1,
-    name: "Los40",
-    desc: "Éxitos del momento",
-    img: "https://upload.wikimedia.org/wikipedia/commons/1/19/Los40_Logo_2020.svg",
-    url: "https://playerservices.streamtheworld.com/api/livestream-redirect/LOS40.mp3"
-  },
-  {
-    id: 2,
-    name: "Cadena SER",
-    desc: "Noticias y actualidad",
-    img: "https://upload.wikimedia.org/wikipedia/commons/7/77/Cadena_SER_logo_2021.svg",
-    url: "https://playerservices.streamtheworld.com/api/livestream-redirect/CADENASER.mp3"
-  },
-  {
-    id: 3,
-    name: "Europa FM",
-    desc: "Música pop y rock",
-    img: "https://upload.wikimedia.org/wikipedia/commons/2/2e/Europa_FM_logo.svg",
-    url: "https://live.europafm.com/live/europafm/master.m3u8"
-  }
+  {id:1, name:"Los40 Madrid", desc:"Éxitos del momento", comunidad:"Madrid", provincia:"Madrid", img:"https://upload.wikimedia.org/wikipedia/commons/1/19/Los40_Logo_2020.svg", url:"https://playerservices.streamtheworld.com/api/livestream-redirect/LOS40.mp3"},
+  {id:2, name:"Cadena SER Madrid", desc:"Noticias y actualidad", comunidad:"Madrid", provincia:"Madrid", img:"https://upload.wikimedia.org/wikipedia/commons/7/77/Cadena_SER_logo_2021.svg", url:"https://playerservices.streamtheworld.com/api/livestream-redirect/CADENASER.mp3"},
+  {id:3, name:"Europa FM Madrid", desc:"Pop y rock", comunidad:"Madrid", provincia:"Madrid", img:"https://upload.wikimedia.org/wikipedia/commons/2/2e/Europa_FM_logo.svg", url:"https://live.europafm.com/live/europafm/master.m3u8"},
+
+  {id:4, name:"RAC1", desc:"Actualidad en Cataluña", comunidad:"Cataluña", provincia:"Barcelona", img:"https://upload.wikimedia.org/wikipedia/commons/6/6b/RAC1_logo.svg", url:"https://playerservices.streamtheworld.com/api/livestream-redirect/RAC1.mp3"},
+  {id:5, name:"Catalunya Ràdio", desc:"Radio pública catalana", comunidad:"Cataluña", provincia:"Barcelona", img:"https://upload.wikimedia.org/wikipedia/commons/0/0c/Catalunya_Radio_logo.svg", url:"https://shoutcast.ccma.cat/ccma/catradio.mp3"},
+
+  {id:6, name:"Canal Sur Radio", desc:"Radio de Andalucía", comunidad:"Andalucía", provincia:"Sevilla", img:"https://upload.wikimedia.org/wikipedia/commons/b/b5/Canal_Sur_Radio_logo.svg", url:"https://playerservices.streamtheworld.com/api/livestream-redirect/CANALSUR.mp3"},
+
+  {id:7, name:"Radio Galicia SER", desc:"SER Galicia", comunidad:"Galicia", provincia:"A Coruña", img:"https://upload.wikimedia.org/wikipedia/commons/7/77/Cadena_SER_logo_2021.svg", url:"https://playerservices.streamtheworld.com/api/livestream-redirect/CADENASER.mp3"}
 ];
 
-let current = null;
+let currentTab = "all";
 const audio = document.getElementById("audio");
 const favs = JSON.parse(localStorage.getItem("favs") || "[]");
 
+function setTab(tab) {
+  currentTab = tab;
+  document.getElementById("tab-all").classList.remove("active");
+  document.getElementById("tab-favs").classList.remove("active");
+  document.getElementById("tab-" + tab).classList.add("active");
+  render();
+}
+
 function render() {
   const q = document.getElementById("search").value.toLowerCase();
+  const com = document.getElementById("comunidad").value;
+  const prov = document.getElementById("provincia").value;
+
   const list = document.getElementById("list");
   list.innerHTML = "";
 
-  radios.filter(r => r.name.toLowerCase().includes(q)).forEach(radio => {
+  let data = radios;
+
+  if (currentTab === "favs") {
+    data = data.filter(r => favs.includes(r.id));
+  }
+
+  data = data.filter(r =>
+    (!q || r.name.toLowerCase().includes(q)) &&
+    (!com || r.comunidad === com) &&
+    (!prov || r.provincia === prov)
+  );
+
+  if (data.length === 0) {
+    list.innerHTML = "<p style='color:var(--muted)'>No hay resultados</p>";
+    return;
+  }
+
+  data.forEach(radio => {
     const div = document.createElement("div");
     div.className = "radio";
-
     const isFav = favs.includes(radio.id);
 
     div.innerHTML = `
       <img src="${radio.img}">
       <div class="radio-info" onclick="playRadio(${radio.id})">
         <h3>${radio.name}</h3>
-        <p>${radio.desc}</p>
+        <p>${radio.desc} · ${radio.provincia}</p>
       </div>
       <div class="heart" onclick="toggleFav(${radio.id})">
         ${isFav ? "❤️" : "🤍"}
@@ -203,11 +270,8 @@ function render() {
 
 function playRadio(id) {
   const radio = radios.find(r => r.id === id);
-  current = radio;
-
   audio.src = radio.url;
   audio.play();
-
   document.getElementById("player").style.display = "flex";
   document.getElementById("playerImg").src = radio.img;
   document.getElementById("playerTitle").textContent = radio.name;
@@ -227,6 +291,32 @@ function toggleFav(id) {
   render();
 }
 
+function initFilters() {
+  const comunidades = [...new Set(radios.map(r => r.comunidad))];
+  const comSelect = document.getElementById("comunidad");
+  comunidades.forEach(c => {
+    const opt = document.createElement("option");
+    opt.value = c;
+    opt.textContent = c;
+    comSelect.appendChild(opt);
+  });
+}
+
+function updateProvincias() {
+  const com = document.getElementById("comunidad").value;
+  const provSelect = document.getElementById("provincia");
+  provSelect.innerHTML = '<option value="">Provincia</option>';
+
+  const provincias = radios.filter(r => r.comunidad === com).map(r => r.provincia);
+  [...new Set(provincias)].forEach(p => {
+    const opt = document.createElement("option");
+    opt.value = p;
+    opt.textContent = p;
+    provSelect.appendChild(opt);
+  });
+}
+
+initFilters();
 render();
 </script>
 

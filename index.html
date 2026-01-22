@@ -12,155 +12,44 @@
   --accent: #38bdf8;
   --text: #f1f5f9;
   --muted: #94a3b8;
+  --danger: #ef4444;
 }
-
 * { box-sizing: border-box; }
-
 body {
   margin: 0;
   font-family: system-ui, sans-serif;
   background: var(--bg);
   color: var(--text);
-  padding-bottom: 100px;
+  padding-bottom: 120px;
 }
-
-header {
-  padding: 16px;
-  font-size: 22px;
-  font-weight: bold;
-}
-
-.tabs {
-  display: flex;
-  gap: 10px;
-  padding: 0 16px 10px;
-}
-
-.tab {
-  flex: 1;
-  padding: 10px;
-  background: var(--card);
-  border-radius: 12px;
-  text-align: center;
-  cursor: pointer;
-}
-
-.tab.active {
-  background: var(--accent);
-  color: #000;
-  font-weight: bold;
-}
-
-.container {
-  padding: 16px;
-}
-
-.search-bar {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
-input, select {
-  flex: 1;
-  padding: 12px;
-  border-radius: 12px;
-  border: none;
-  background: var(--card);
-  color: var(--text);
-}
-
-button.search-btn {
-  padding: 12px 18px;
-  border-radius: 12px;
-  border: none;
-  background: var(--accent);
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.filters {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-
-.radio {
-  background: var(--card);
-  padding: 12px;
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.radio img {
-  width: 60px;
-  height: 60px;
-  border-radius: 12px;
-  object-fit: cover;
-  background: #000;
-}
-
-.radio-info {
-  flex: 1;
-  cursor: pointer;
-}
-
-.radio-info h3 {
-  margin: 0;
-  font-size: 16px;
-}
-
-.radio-info p {
-  margin: 4px 0 0;
-  font-size: 13px;
-  color: var(--muted);
-}
-
-.heart {
-  font-size: 22px;
-  cursor: pointer;
-}
-
-.player {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #020617;
-  border-top: 1px solid #1e293b;
-  padding: 10px 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.player img {
-  width: 50px;
-  height: 50px;
-  border-radius: 12px;
-}
-
-.player-info {
-  flex: 1;
-}
-
-.player-info h4 {
-  margin: 0;
-  font-size: 14px;
-}
-
-.player-info span {
-  font-size: 12px;
-  color: red;
-}
+header { padding: 16px; font-size: 22px; font-weight: bold; }
+.tabs { display: flex; gap: 10px; padding: 0 16px 10px; }
+.tab { flex: 1; padding: 10px; background: var(--card); border-radius: 12px; text-align: center; cursor: pointer; }
+.tab.active { background: var(--accent); color: #000; font-weight: bold; }
+.container { padding: 16px; }
+.search-bar { display: flex; gap: 10px; margin-bottom: 12px; }
+input, select { flex: 1; padding: 12px; border-radius: 12px; border: none; background: var(--card); color: var(--text); }
+button { padding: 10px 14px; border-radius: 12px; border: none; background: var(--accent); font-weight: bold; cursor: pointer; }
+.filters { display: flex; gap: 10px; margin-bottom: 16px; }
+.radio { background: var(--card); padding: 12px; border-radius: 16px; margin-bottom: 10px; }
+.radio-header { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+.radio-header h3 { margin: 0; font-size: 16px; }
+.radio-body { display: none; margin-top: 10px; font-size: 14px; color: var(--muted); }
+.radio.open .radio-body { display: block; }
+.radio-actions { margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap; }
+.heart { font-size: 20px; cursor: pointer; }
+.delete-btn { background: var(--danger); color: white; }
+.player { position: fixed; bottom: 0; left: 0; right: 0; background: #020617; border-top: 1px solid #1e293b; padding: 10px 16px; display: flex; align-items: center; gap: 12px; }
+.player-info { flex: 1; }
+.player-info h4 { margin: 0; font-size: 14px; }
+.player-info span { font-size: 12px; color: red; }
+.add-form { background: var(--card); padding: 14px; border-radius: 16px; margin-bottom: 16px; }
+.add-form h3 { margin-top: 0; }
+.add-form input { margin-bottom: 10px; width: 100%; }
 </style>
 </head>
 
 <body>
-
 <header>📻 Radios de España</header>
 
 <div class="tabs">
@@ -170,16 +59,24 @@ button.search-btn {
 
 <div class="container">
 
+  <div class="add-form">
+    <h3>Añadir emisora manualmente</h3>
+    <input id="newName" placeholder="Nombre de la emisora">
+    <input id="newCom" placeholder="Comunidad Autónoma">
+    <input id="newProv" placeholder="Provincia">
+    <input id="newUrl" placeholder="URL del streaming (mp3 / m3u8)">
+    <button onclick="addRadio()">Añadir emisora</button>
+  </div>
+
   <div class="search-bar">
     <input type="text" id="search" placeholder="Buscar emisora...">
-    <button class="search-btn" onclick="render()">Buscar</button>
+    <button onclick="render()">Buscar</button>
   </div>
 
   <div class="filters">
     <select id="comunidad" onchange="updateProvincias()">
       <option value="">Comunidad</option>
     </select>
-
     <select id="provincia">
       <option value="">Provincia</option>
     </select>
@@ -189,7 +86,6 @@ button.search-btn {
 </div>
 
 <div class="player" id="player" style="display:none;">
-  <img id="playerImg" src="">
   <div class="player-info">
     <h4 id="playerTitle"></h4>
     <span>🔴 EN DIRECTO</span>
@@ -204,18 +100,16 @@ let radios = [];
 let currentTab = "all";
 const audio = document.getElementById("audio");
 const favs = JSON.parse(localStorage.getItem("favs") || "[]");
+let removed = JSON.parse(localStorage.getItem("removed") || "[]");
+let customRadios = JSON.parse(localStorage.getItem("customRadios") || "[]");
 
-// Load external JSON database
 fetch("spain_radios_full.json")
   .then(r => r.json())
   .then(data => {
-    radios = data;
+    radios = [...data, ...customRadios];
+    radios = radios.filter(r => !removed.includes(r.id));
     initFilters();
     render();
-  })
-  .catch(err => {
-    document.getElementById("list").innerHTML = "<p style='color:var(--muted)'>No se pudo cargar la base de emisoras.</p>";
-    console.error(err);
   });
 
 function setTab(tab) {
@@ -230,15 +124,11 @@ function render() {
   const q = document.getElementById("search").value.toLowerCase();
   const com = document.getElementById("comunidad").value;
   const prov = document.getElementById("provincia").value;
-
   const list = document.getElementById("list");
   list.innerHTML = "";
 
   let data = radios;
-
-  if (currentTab === "favs") {
-    data = data.filter(r => favs.includes(r.id));
-  }
+  if (currentTab === "favs") data = data.filter(r => favs.includes(r.id));
 
   data = data.filter(r =>
     (!q || r.name.toLowerCase().includes(q)) &&
@@ -251,35 +141,34 @@ function render() {
     return;
   }
 
-  data.slice(0, 300).forEach(radio => {
+  data.slice(0, 200).forEach(radio => {
     const div = document.createElement("div");
     div.className = "radio";
-    const isFav = favs.includes(radio.id);
 
     div.innerHTML = `
-      <img src="${radio.logo || ''}" onerror="this.style.display='none'">
-      <div class="radio-info" onclick="playRadio(${radio.id})">
+      <div class="radio-header" onclick="this.parentElement.classList.toggle('open')">
         <h3>${radio.name}</h3>
-        <p>${radio.comunidad} · ${radio.provincia}</p>
       </div>
-      <div class="heart" onclick="toggleFav(${radio.id})">
-        ${isFav ? "❤️" : "🤍"}
+      <div class="radio-body">
+        <p>${radio.comunidad} · ${radio.provincia}</p>
+        <div class="radio-actions">
+          <button onclick="playRadio(${radio.id})">▶ Escuchar</button>
+          <button onclick="toggleFav(${radio.id})">${favs.includes(radio.id) ? "❤️ Quitar favorito" : "🤍 Favorito"}</button>
+          <button class="delete-btn" onclick="deleteRadio(${radio.id})">🗑 Eliminar</button>
+        </div>
       </div>
     `;
+
     list.appendChild(div);
   });
 }
 
 function playRadio(id) {
   const radio = radios.find(r => r.id === id);
-  if (!radio || !radio.url) {
-    alert("Esta emisora no tiene streaming disponible todavía.");
-    return;
-  }
+  if (!radio || !radio.url) return alert("Esta emisora no tiene streaming válido.");
   audio.src = radio.url;
   audio.play();
   document.getElementById("player").style.display = "flex";
-  document.getElementById("playerImg").src = radio.logo || "";
   document.getElementById("playerTitle").textContent = radio.name;
 }
 
@@ -289,18 +178,51 @@ function togglePlay() {
 }
 
 function toggleFav(id) {
-  const index = favs.indexOf(id);
-  if (index >= 0) favs.splice(index, 1);
-  else favs.push(id);
-
+  const i = favs.indexOf(id);
+  if (i >= 0) favs.splice(i, 1); else favs.push(id);
   localStorage.setItem("favs", JSON.stringify(favs));
   render();
 }
 
+function deleteRadio(id) {
+  if (!confirm("¿Eliminar esta emisora de tu app?")) return;
+  removed.push(id);
+  localStorage.setItem("removed", JSON.stringify(removed));
+  radios = radios.filter(r => r.id !== id);
+  render();
+}
+
+function addRadio() {
+  const name = document.getElementById("newName").value.trim();
+  const com = document.getElementById("newCom").value.trim();
+  const prov = document.getElementById("newProv").value.trim();
+  const url = document.getElementById("newUrl").value.trim();
+
+  if (!name || !com || !prov || !url) {
+    alert("Rellena todos los campos");
+    return;
+  }
+
+  const id = Date.now();
+  const newRadio = { id, name, comunidad: com, provincia: prov, url, logo: "" };
+
+  customRadios.push(newRadio);
+  localStorage.setItem("customRadios", JSON.stringify(customRadios));
+
+  radios.push(newRadio);
+  initFilters();
+  render();
+
+  document.getElementById("newName").value = "";
+  document.getElementById("newCom").value = "";
+  document.getElementById("newProv").value = "";
+  document.getElementById("newUrl").value = "";
+}
+
 function initFilters() {
-  const comunidades = [...new Set(radios.map(r => r.comunidad))].sort();
   const comSelect = document.getElementById("comunidad");
-  comunidades.forEach(c => {
+  comSelect.innerHTML = '<option value="">Comunidad</option>';
+  [...new Set(radios.map(r => r.comunidad))].sort().forEach(c => {
     const opt = document.createElement("option");
     opt.value = c;
     opt.textContent = c;
@@ -312,16 +234,14 @@ function updateProvincias() {
   const com = document.getElementById("comunidad").value;
   const provSelect = document.getElementById("provincia");
   provSelect.innerHTML = '<option value="">Provincia</option>';
-
-  const provincias = radios.filter(r => r.comunidad === com).map(r => r.provincia);
-  [...new Set(provincias)].sort().forEach(p => {
-    const opt = document.createElement("option");
-    opt.value = p;
-    opt.textContent = p;
-    provSelect.appendChild(opt);
-  });
+  [...new Set(radios.filter(r => r.comunidad === com).map(r => r.provincia))]
+    .sort().forEach(p => {
+      const opt = document.createElement("option");
+      opt.value = p;
+      opt.textContent = p;
+      provSelect.appendChild(opt);
+    });
 }
 </script>
-
 </body>
 </html>

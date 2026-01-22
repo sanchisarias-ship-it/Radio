@@ -2,326 +2,304 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Radios de España</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>🎧 Podcast</title>
+<meta name="theme-color" content="#111111">
 
 <style>
-:root {
-  --bg: #0f172a;
-  --card: #1e293b;
-  --accent: #38bdf8;
-  --text: #f1f5f9;
-  --muted: #94a3b8;
+:root{
+  --bg:#0b0b0b;
+  --card:#141414;
+  --border:#222;
+  --accent:#f43f5e;
+  --text:#f5f5f5;
+  --muted:#a1a1aa;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial;
+  background:var(--bg);
+  color:var(--text);
+  padding-bottom:120px;
+}
+header{position:sticky;top:0;background:#000;padding:16px;text-align:center;font-weight:800;font-size:18px;z-index:10}
+.section{padding:14px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:16px;margin-bottom:14px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input,button,a{padding:10px 14px;border-radius:999px;border:1px solid var(--border);background:#000;color:#fff;text-decoration:none;font-size:14px}
+button.primary{background:var(--accent);color:#000;font-weight:800}
+button.small{padding:6px 12px;font-size:12px}
+.list{display:grid;gap:10px}
+.item{background:#000;border:1px solid var(--border);border-radius:18px;padding:12px}
+.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.muted{color:var(--muted);font-size:14px}
+
+.player{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#000;
+  border-top:1px solid var(--border);
+  padding:12px;
+  z-index:999;
 }
 
-* { box-sizing: border-box; }
+audio{width:100%}
+.programHeader{display:flex;align-items:center;gap:6px}
+.programHeader strong{flex:1}
+.loading{color:#facc15;font-size:13px}
+.error{color:#fca5a5;font-size:13px}
 
-body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  padding-bottom: 100px;
-}
-
-header {
-  padding: 16px;
-  font-size: 22px;
-  font-weight: bold;
-}
-
-.tabs {
-  display: flex;
-  gap: 10px;
-  padding: 0 16px 10px;
-}
-
-.tab {
-  flex: 1;
-  padding: 10px;
-  background: var(--card);
-  border-radius: 12px;
-  text-align: center;
-  cursor: pointer;
-}
-
-.tab.active {
-  background: var(--accent);
-  color: #000;
-  font-weight: bold;
-}
-
-.container {
-  padding: 16px;
-}
-
-.search-bar {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
-input, select {
-  flex: 1;
-  padding: 12px;
-  border-radius: 12px;
-  border: none;
-  background: var(--card);
-  color: var(--text);
-}
-
-button.search-btn {
-  padding: 12px 18px;
-  border-radius: 12px;
-  border: none;
-  background: var(--accent);
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.filters {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-
-.radio {
-  background: var(--card);
-  padding: 12px;
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.radio img {
-  width: 60px;
-  height: 60px;
-  border-radius: 12px;
-  object-fit: cover;
-  background: #000;
-}
-
-.radio-info {
-  flex: 1;
-  cursor: pointer;
-}
-
-.radio-info h3 {
-  margin: 0;
-  font-size: 16px;
-}
-
-.radio-info p {
-  margin: 4px 0 0;
-  font-size: 13px;
-  color: var(--muted);
-}
-
-.heart {
-  font-size: 22px;
-  cursor: pointer;
-}
-
-.player {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #020617;
-  border-top: 1px solid #1e293b;
-  padding: 10px 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.player img {
-  width: 50px;
-  height: 50px;
-  border-radius: 12px;
-}
-
-.player-info {
-  flex: 1;
-}
-
-.player-info h4 {
-  margin: 0;
-  font-size: 14px;
-}
-
-.player-info span {
-  font-size: 12px;
-  color: red;
-}
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { from {transform:rotate(0deg)} to {transform:rotate(360deg)} }
 </style>
 </head>
-
 <body>
 
-<header>📻 Radios de España</header>
+<header>🎧 Podcast</header>
 
-<div class="tabs">
-  <div class="tab active" id="tab-all" onclick="setTab('all')">Inicio</div>
-  <div class="tab" id="tab-favs" onclick="setTab('favs')">Favoritas</div>
-</div>
-
-<div class="container">
-
-  <div class="search-bar">
-    <input type="text" id="search" placeholder="Buscar emisora...">
-    <button class="search-btn" onclick="render()">Buscar</button>
+<section class="section">
+  <div class="card">
+    <h3>🔎 Buscar podcasts</h3>
+    <div class="row">
+      <input id="podQ" placeholder="Buscar podcast..." style="flex:1">
+      <button class="primary" onclick="searchPods()">Buscar</button>
+    </div>
+    <div id="podResults" class="list"></div>
   </div>
 
-  <div class="filters">
-    <select id="comunidad" onchange="updateProvincias()">
-      <option value="">Comunidad</option>
-    </select>
-
-    <select id="provincia">
-      <option value="">Provincia</option>
-    </select>
+  <div class="card">
+    <h3>📚 Mis programas</h3>
+    <div id="programList"></div>
   </div>
+</section>
 
-  <div id="list"></div>
+<div class="player">
+  <strong id="playerTitle">Nada en reproducción</strong>
+  <audio id="player" controls playsinline></audio>
 </div>
-
-<div class="player" id="player" style="display:none;">
-  <img id="playerImg" src="">
-  <div class="player-info">
-    <h4 id="playerTitle"></h4>
-    <span>🔴 EN DIRECTO</span>
-  </div>
-  <button onclick="togglePlay()">▶ / ❚❚</button>
-</div>
-
-<audio id="audio"></audio>
 
 <script>
-let radios = [];
-let currentTab = "all";
-const audio = document.getElementById("audio");
-const favs = JSON.parse(localStorage.getItem("favs") || "[]");
+const player = document.getElementById("player");
+const store=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const load=(k,d=[])=>JSON.parse(localStorage.getItem(k)||JSON.stringify(d));
+const esc = s => String(s||"").replace(/'/g,"");
 
-// Load external JSON database
-fetch("spain_radios_full.json")
-  .then(r => r.json())
-  .then(data => {
-    radios = data;
-    initFilters();
-    render();
-  })
-  .catch(err => {
-    document.getElementById("list").innerHTML = "<p style='color:var(--muted)'>No se pudo cargar la base de emisoras.</p>";
-    console.error(err);
-  });
+const PROXIES = [
+  url => "https://api.allorigins.win/raw?url=" + encodeURIComponent(url),
+  url => "https://cors.isomorphic-git.org/" + url
+];
 
-function setTab(tab) {
-  currentTab = tab;
-  document.getElementById("tab-all").classList.remove("active");
-  document.getElementById("tab-favs").classList.remove("active");
-  document.getElementById("tab-" + tab).classList.add("active");
-  render();
+let currentEpisodeId = null;
+
+function play(url,title,id){
+  currentEpisodeId = id;
+  player.src=url;
+  document.getElementById("playerTitle").textContent=title;
+
+  const saved = localStorage.getItem("pos_"+id);
+  player.onloadedmetadata = () => {
+    if(saved && !isNaN(saved)) player.currentTime = Number(saved);
+  };
+
+  player.play().catch(()=>{});
+
+  if ('mediaSession' in navigator) {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: title,
+      artist: "Podcast",
+      album: "Mi App"
+    });
+    navigator.mediaSession.setActionHandler('play', () => player.play());
+    navigator.mediaSession.setActionHandler('pause', () => player.pause());
+  }
 }
 
-function render() {
-  const q = document.getElementById("search").value.toLowerCase();
-  const com = document.getElementById("comunidad").value;
-  const prov = document.getElementById("provincia").value;
+player.addEventListener("timeupdate",()=>{
+  if(currentEpisodeId){
+    localStorage.setItem("pos_"+currentEpisodeId, player.currentTime);
+  }
+});
 
-  const list = document.getElementById("list");
-  list.innerHTML = "";
+async function searchPods(){
+  const q = podQ.value.trim(); if(!q) return;
+  podResults.innerHTML="<div class='muted'>Buscando…</div>";
+  const results=[];
+  await Promise.allSettled([searchApple(q,results), searchPI(q,results), searchFyyd(q,results)]);
+  podResults.innerHTML="";
+  if(!results.length){ podResults.innerHTML="<div class='muted'>Sin resultados.</div>"; return; }
 
-  let data = radios;
+  const existing = load("programs").map(p=>p.feedUrl);
+  results.forEach(p=>{
+    const added = existing.includes(p.feedUrl);
+    const div=document.createElement("div");
+    div.className="item";
+    div.innerHTML=`<strong>${p.title}</strong>
+      <p class="muted">${p.author||""}</p>
+      <button ${added?"disabled":""} onclick="addProgram('${esc(p.feedUrl)}','${esc(p.title)}')">
+        ${added?"✔ Añadido":"➕ Añadir"}
+      </button>`;
+    podResults.appendChild(div);
+  });
+}
 
-  if (currentTab === "favs") {
-    data = data.filter(r => favs.includes(r.id));
+async function searchApple(q,arr){
+  try{
+    const res = await fetch("https://api.allorigins.win/raw?url="+encodeURIComponent("https://itunes.apple.com/search?media=podcast&term="+q+"&limit=20"));
+    const data = await res.json();
+    data.results.forEach(p=>p.feedUrl && arr.push({title:p.collectionName,author:p.artistName,feedUrl:p.feedUrl}));
+  }catch{}
+}
+async function searchPI(q,arr){
+  try{
+    const res = await fetch("https://api.allorigins.win/raw?url="+encodeURIComponent("https://api.podcastindex.org/api/1.0/search/byterm?q="+q));
+    const data = await res.json();
+    (data.feeds||[]).slice(0,20).forEach(p=>p.url && arr.push({title:p.title,author:p.author,feedUrl:p.url}));
+  }catch{}
+}
+async function searchFyyd(q,arr){
+  try{
+    const res = await fetch("https://api.allorigins.win/raw?url="+encodeURIComponent("https://api.fyyd.de/0.2/search/podcast?term="+q));
+    const data = await res.json();
+    (data.data||[]).slice(0,15).forEach(p=>p.xmlURL && arr.push({title:p.title,author:p.author,feedUrl:p.xmlURL}));
+  }catch{}
+}
+
+function addProgram(feedUrl,title){
+  let programs = load("programs");
+  if(programs.some(p=>p.feedUrl===feedUrl)) return;
+  programs.push({title,feedUrl,episodes:[],open:true,loading:true,error:false});
+  store("programs",programs);
+  renderPrograms();
+  loadEpisodes(feedUrl,true);
+}
+
+async function loadEpisodes(feedUrl,initial=false){
+  let text=null;
+  for(const make of PROXIES){
+    try{
+      const res = await fetch(make(feedUrl));
+      text = await res.text();
+      if(text && text.includes("<item")) break;
+    }catch{}
   }
 
-  data = data.filter(r =>
-    (!q || r.name.toLowerCase().includes(q)) &&
-    (!com || r.comunidad === com) &&
-    (!prov || r.provincia === prov)
-  );
+  let programs=load("programs");
+  const p=programs.find(x=>x.feedUrl===feedUrl);
 
-  if (data.length === 0) {
-    list.innerHTML = "<p style='color:var(--muted)'>No hay resultados</p>";
-    return;
+  if(!text){
+    p.loading=false; p.error=true;
+    store("programs",programs); renderPrograms(); return;
   }
 
-  data.slice(0, 300).forEach(radio => {
-    const div = document.createElement("div");
-    div.className = "radio";
-    const isFav = favs.includes(radio.id);
+  try{
+    const xml = new DOMParser().parseFromString(text,"text/xml");
+    const items=[...xml.querySelectorAll("item")];
 
-    div.innerHTML = `
-      <img src="${radio.logo || ''}" onerror="this.style.display='none'">
-      <div class="radio-info" onclick="playRadio(${radio.id})">
-        <h3>${radio.name}</h3>
-        <p>${radio.comunidad} · ${radio.provincia}</p>
-      </div>
-      <div class="heart" onclick="toggleFav(${radio.id})">
-        ${isFav ? "❤️" : "🤍"}
-      </div>
-    `;
-    list.appendChild(div);
-  });
-}
+    const episodes = items.map(i=>{
+      const guid = i.querySelector("guid")?.textContent;
+      const url = i.querySelector("enclosure")?.getAttribute("url");
+      const title = i.querySelector("title")?.textContent || "Episodio";
+      const id = btoa((guid || url || title));
+      return { id, title, url, date:new Date(i.querySelector("pubDate")?.textContent||Date.now()).getTime() };
+    }).filter(e=>e.url);
 
-function playRadio(id) {
-  const radio = radios.find(r => r.id === id);
-  if (!radio || !radio.url) {
-    alert("Esta emisora no tiene streaming disponible todavía.");
-    return;
+    const prevCount = p.episodes.length;
+    p.episodes = episodes.sort((a,b)=>b.date-a.date);
+
+    if(!initial && episodes.length > prevCount){
+      alert("📢 Nuevos episodios en " + p.title);
+    }
+
+    p.loading=false; p.error=false;
+    store("programs",programs);
+    renderPrograms();
+  }catch{
+    p.loading=false; p.error=true;
+    store("programs",programs);
+    renderPrograms();
   }
-  audio.src = radio.url;
-  audio.play();
-  document.getElementById("player").style.display = "flex";
-  document.getElementById("playerImg").src = radio.logo || "";
-  document.getElementById("playerTitle").textContent = radio.name;
 }
 
-function togglePlay() {
-  if (!audio.src) return;
-  audio.paused ? audio.play() : audio.pause();
-}
-
-function toggleFav(id) {
-  const index = favs.indexOf(id);
-  if (index >= 0) favs.splice(index, 1);
-  else favs.push(id);
-
-  localStorage.setItem("favs", JSON.stringify(favs));
-  render();
-}
-
-function initFilters() {
-  const comunidades = [...new Set(radios.map(r => r.comunidad))].sort();
-  const comSelect = document.getElementById("comunidad");
-  comunidades.forEach(c => {
-    const opt = document.createElement("option");
-    opt.value = c;
-    opt.textContent = c;
-    comSelect.appendChild(opt);
+function refreshProgram(feedUrl,btn){
+  if(btn) btn.classList.add("spin");
+  loadEpisodes(feedUrl,false).finally(()=>{
+    if(btn) btn.classList.remove("spin");
   });
 }
 
-function updateProvincias() {
-  const com = document.getElementById("comunidad").value;
-  const provSelect = document.getElementById("provincia");
-  provSelect.innerHTML = '<option value="">Provincia</option>';
+function toggleProgram(feedUrl){
+  let programs=load("programs");
+  const p=programs.find(x=>x.feedUrl===feedUrl);
+  p.open=!p.open;
+  store("programs",programs);
+  renderPrograms();
+}
 
-  const provincias = radios.filter(r => r.comunidad === com).map(r => r.provincia);
-  [...new Set(provincias)].sort().forEach(p => {
-    const opt = document.createElement("option");
-    opt.value = p;
-    opt.textContent = p;
-    provSelect.appendChild(opt);
+function deleteProgram(feedUrl){
+  let programs=load("programs").filter(p=>p.feedUrl!==feedUrl);
+  store("programs",programs);
+  renderPrograms();
+}
+
+function togglePlayed(id){
+  const key="played_"+id;
+  if(localStorage.getItem(key)==="1"){ localStorage.removeItem(key); }
+  else { localStorage.setItem(key,"1"); }
+  renderPrograms();
+}
+
+function deleteEpisode(programFeed,id){
+  let programs=load("programs");
+  const p=programs.find(x=>x.feedUrl===programFeed);
+  p.episodes = p.episodes.filter(e=>e.id!==id);
+  store("programs",programs);
+  renderPrograms();
+}
+
+function renderPrograms(){
+  programList.innerHTML="";
+  load("programs").forEach(p=>{
+    const box=document.createElement("div");
+    box.className="item";
+    box.innerHTML=`
+      <div class="programHeader">
+        <strong>${p.title}</strong>
+        <button class="small" onclick="refreshProgram('${esc(p.feedUrl)}',this)">🔄</button>
+        <button class="small" onclick="toggleProgram('${esc(p.feedUrl)}')">${p.open?"▲":"▼"}</button>
+        <button class="small" onclick="deleteProgram('${esc(p.feedUrl)}')">🗑</button>
+      </div>`;
+
+    if(p.open){
+      if(p.loading) box.innerHTML += `<div class="loading">Cargando episodios…</div>`;
+      if(p.error) box.innerHTML += `<div class="error">No se pudieron cargar.</div>`;
+
+      p.episodes.forEach(e=>{
+        const played = localStorage.getItem("played_"+e.id)==="1";
+        const div=document.createElement("div");
+        div.className="item";
+        div.innerHTML=`
+          ${played?"✅ ":""}${e.title}
+          <div class="actions">
+            <button onclick="play('${esc(e.url)}','${esc(e.title)}','${e.id}')">▶</button>
+            <button onclick="togglePlayed('${e.id}')">${played?"No escuchado":"Escuchado"}</button>
+            <a href="${e.url}" target="_blank">⬇ Descargar</a>
+            <button onclick="deleteEpisode('${esc(p.feedUrl)}','${e.id}')">🗑</button>
+          </div>`;
+        box.appendChild(div);
+      });
+    }
+    programList.appendChild(box);
   });
 }
+
+setInterval(()=>{
+  load("programs").forEach(p=> loadEpisodes(p.feedUrl,false));
+}, 1200000);
+
+renderPrograms();
 </script>
-
 </body>
 </html>

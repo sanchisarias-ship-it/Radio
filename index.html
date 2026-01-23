@@ -3,54 +3,31 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Radios de España</title>
-
+<title>Radios locales de Alicante (Onil)</title>
 <style>
-:root {
-  --bg: #0f172a;
-  --card: #1e293b;
-  --accent: #38bdf8;
-  --text: #f1f5f9;
-  --muted: #94a3b8;
-  --danger: #ef4444;
-}
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  padding-bottom: 120px;
-}
-header { padding: 16px; font-size: 22px; font-weight: bold; }
-.tabs { display: flex; gap: 10px; padding: 0 16px 10px; }
-.tab { flex: 1; padding: 10px; background: var(--card); border-radius: 12px; text-align: center; cursor: pointer; }
-.tab.active { background: var(--accent); color: #000; font-weight: bold; }
-.container { padding: 16px; }
-.search-bar { display: flex; gap: 10px; margin-bottom: 12px; }
-input, select { flex: 1; padding: 12px; border-radius: 12px; border: none; background: var(--card); color: var(--text); }
-button { padding: 10px 14px; border-radius: 12px; border: none; background: var(--accent); font-weight: bold; cursor: pointer; }
-.filters { display: flex; gap: 10px; margin-bottom: 16px; }
-.radio { background: var(--card); padding: 12px; border-radius: 16px; margin-bottom: 10px; }
-.radio-header { display: flex; align-items: center; gap: 12px; cursor: pointer; }
-.radio-header h3 { margin: 0; font-size: 16px; }
-.radio-body { display: none; margin-top: 10px; font-size: 14px; color: var(--muted); }
-.radio.open .radio-body { display: block; }
-.radio-actions { margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap; }
-.heart { font-size: 20px; cursor: pointer; }
-.delete-btn { background: var(--danger); color: white; }
-.player { position: fixed; bottom: 0; left: 0; right: 0; background: #020617; border-top: 1px solid #1e293b; padding: 10px 16px; display: flex; align-items: center; gap: 12px; }
-.player-info { flex: 1; }
-.player-info h4 { margin: 0; font-size: 14px; }
-.player-info span { font-size: 12px; color: red; }
-.add-form { background: var(--card); padding: 14px; border-radius: 16px; margin-bottom: 16px; }
-.add-form h3 { margin-top: 0; }
-.add-form input { margin-bottom: 10px; width: 100%; }
+:root {--bg:#0f172a;--card:#1e293b;--accent:#38bdf8;--text:#f1f5f9;--muted:#94a3b8;}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);padding-bottom:100px}
+header{padding:16px;font-size:22px;font-weight:bold}
+.tabs{display:flex;gap:10px;padding:0 16px 10px}
+.tab{flex:1;padding:10px;background:var(--card);border-radius:12px;text-align:center;cursor:pointer}
+.tab.active{background:var(--accent);color:#000;font-weight:bold}
+.container{padding:16px}
+.search-bar{display:flex;gap:10px;margin-bottom:12px}
+input{flex:1;padding:12px;border-radius:12px;border:none;background:var(--card);color:var(--text)}
+button{padding:10px 14px;border-radius:12px;border:none;background:var(--accent);font-weight:bold;cursor:pointer}
+.radio{background:var(--card);padding:12px;border-radius:16px;margin-bottom:10px}
+.radio-header{cursor:pointer}
+.radio-body{display:none;margin-top:8px;color:var(--muted)}
+.radio.open .radio-body{display:block}
+.player{position:fixed;bottom:0;left:0;right:0;background:#020617;border-top:1px solid #1e293b;padding:10px 16px;display:flex;align-items:center;gap:12px}
+.player-info{flex:1}
+.player-info h4{margin:0;font-size:14px}
+.player-info span{font-size:12px;color:red}
 </style>
 </head>
-
 <body>
-<header>📻 Radios de España</header>
+<header>📻 Radios locales de Alicante (zona Onil)</header>
 
 <div class="tabs">
   <div class="tab active" id="tab-all" onclick="setTab('all')">Inicio</div>
@@ -58,28 +35,9 @@ button { padding: 10px 14px; border-radius: 12px; border: none; background: var(
 </div>
 
 <div class="container">
-
-  <div class="add-form">
-    <h3>Añadir emisora manualmente</h3>
-    <input id="newName" placeholder="Nombre de la emisora">
-    <input id="newCom" placeholder="Comunidad Autónoma">
-    <input id="newProv" placeholder="Provincia">
-    <input id="newUrl" placeholder="URL del streaming (mp3 / m3u8)">
-    <button onclick="addRadio()">Añadir emisora</button>
-  </div>
-
   <div class="search-bar">
     <input type="text" id="search" placeholder="Buscar emisora...">
     <button onclick="render()">Buscar</button>
-  </div>
-
-  <div class="filters">
-    <select id="comunidad" onchange="updateProvincias()">
-      <option value="">Comunidad</option>
-    </select>
-    <select id="provincia">
-      <option value="">Provincia</option>
-    </select>
   </div>
 
   <div id="list"></div>
@@ -96,152 +54,74 @@ button { padding: 10px 14px; border-radius: 12px; border: none; background: var(
 <audio id="audio"></audio>
 
 <script>
-let radios = [];
+const radios = [
+  // Muy locales / cercanas a Onil
+  {id:1,name:"La Fresca FM (Onil)",comunidad:"Comunitat Valenciana",provincia:"Alicante",url:"https://stream.lafresca.fm/live.mp3"},
+  {id:2,name:"Radio Alcoy (SER)",comunidad:"Comunitat Valenciana",provincia:"Alicante",url:"https://playerservices.streamtheworld.com/api/livestream-redirect/CADENASER.mp3"},
+  {id:3,name:"COPE Alcoy",comunidad:"Comunitat Valenciana",provincia:"Alicante",url:"http://195.55.74.205/cope/net1-low.mp3"},
+  {id:4,name:"Onda Cero Alcoy",comunidad:"Comunitat Valenciana",provincia:"Alicante",url:"https://icecast-streaming.nice264.com/ondacero"},
+  {id:5,name:"Radio Villena (SER)",comunidad:"Comunitat Valenciana",provincia:"Alicante",url:"https://playerservices.streamtheworld.com/api/livestream-redirect/CADENASER.mp3"},
+  {id:6,name:"COPE Villena",comunidad:"Comunitat Valenciana",provincia:"Alicante",url:"http://195.55.74.205/cope/net1-low.mp3"},
+  {id:7,name:"Radio Elda SER Vinalopó",comunidad:"Comunitat Valenciana",provincia:"Alicante",url:"https://playerservices.streamtheworld.com/api/livestream-redirect/CADENASER.mp3"},
+  {id:8,name:"COPE Elda Vinalopó",comunidad:"Comunitat Valenciana",provincia:"Alicante",url:"http://195.55.74.205/cope/net1-low.mp3"},
+  {id:9,name:"Onda Cero Elche",comunidad:"Comunitat Valenciana",provincia:"Alicante",url:"https://icecast-streaming.nice264.com/ondacero"},
+  {id:10,name:"Radio Elche (SER)",comunidad:"Comunitat Valenciana",provincia:"Alicante",url:"https://playerservices.streamtheworld.com/api/livestream-redirect/CADENASER.mp3"},
+  {id:11,name:"Radio San Vicente",comunidad:"Comunitat Valenciana",provincia:"Alicante",url:"https://streaming.radiosanvicente.com/directo.mp3"},
+  {id:12,name:"Radio UMH (Elche)",comunidad:"Comunitat Valenciana",provincia:"Alicante",url:"https://radio.umh.es/radio-directo/"},
+
+  // Cercanas a la provincia
+  {id:13,name:"La Fresca FM (Murcia)",comunidad:"Región de Murcia",provincia:"Murcia",url:"https://stream.lafresca.fm/live.mp3"}
+];
+
 let currentTab = "all";
 const audio = document.getElementById("audio");
 const favs = JSON.parse(localStorage.getItem("favs") || "[]");
-let removed = JSON.parse(localStorage.getItem("removed") || "[]");
-let customRadios = JSON.parse(localStorage.getItem("customRadios") || "[]");
 
-fetch("spain_radios_full.json")
-  .then(r => r.json())
-  .then(data => {
-    radios = [...data, ...customRadios];
-    radios = radios.filter(r => !removed.includes(r.id));
-    initFilters();
-    render();
-  });
-
-function setTab(tab) {
-  currentTab = tab;
+function setTab(tab){
+  currentTab=tab;
   document.getElementById("tab-all").classList.remove("active");
   document.getElementById("tab-favs").classList.remove("active");
-  document.getElementById("tab-" + tab).classList.add("active");
+  document.getElementById("tab-"+tab).classList.add("active");
   render();
 }
 
-function render() {
-  const q = document.getElementById("search").value.toLowerCase();
-  const com = document.getElementById("comunidad").value;
-  const prov = document.getElementById("provincia").value;
-  const list = document.getElementById("list");
-  list.innerHTML = "";
-
-  let data = radios;
-  if (currentTab === "favs") data = data.filter(r => favs.includes(r.id));
-
-  data = data.filter(r =>
-    (!q || r.name.toLowerCase().includes(q)) &&
-    (!com || r.comunidad === com) &&
-    (!prov || r.provincia === prov)
-  );
-
-  if (data.length === 0) {
-    list.innerHTML = "<p style='color:var(--muted)'>No hay resultados</p>";
-    return;
-  }
-
-  data.slice(0, 200).forEach(radio => {
-    const div = document.createElement("div");
-    div.className = "radio";
-
-    div.innerHTML = `
-      <div class="radio-header" onclick="this.parentElement.classList.toggle('open')">
-        <h3>${radio.name}</h3>
-      </div>
-      <div class="radio-body">
-        <p>${radio.comunidad} · ${radio.provincia}</p>
-        <div class="radio-actions">
-          <button onclick="playRadio(${radio.id})">▶ Escuchar</button>
-          <button onclick="toggleFav(${radio.id})">${favs.includes(radio.id) ? "❤️ Quitar favorito" : "🤍 Favorito"}</button>
-          <button class="delete-btn" onclick="deleteRadio(${radio.id})">🗑 Eliminar</button>
-        </div>
-      </div>
-    `;
-
+function render(){
+  const q=document.getElementById("search").value.toLowerCase();
+  const list=document.getElementById("list");
+  list.innerHTML="";
+  let data=radios;
+  if(currentTab==="favs") data=data.filter(r=>favs.includes(r.id));
+  data=data.filter(r=>(!q||r.name.toLowerCase().includes(q)));
+  if(!data.length){list.innerHTML="<p style='color:var(--muted)'>No hay resultados</p>";return;}
+  data.forEach(r=>{
+    const div=document.createElement("div");
+    div.className="radio";
+    div.innerHTML=`<div class="radio-header" onclick="this.parentElement.classList.toggle('open')"><strong>${r.name}</strong></div>
+    <div class="radio-body"><p>${r.comunidad} · ${r.provincia}</p>
+    <button onclick="playRadio(${r.id})">▶ Escuchar</button>
+    <button onclick="toggleFav(${r.id})">${favs.includes(r.id)?"❤️ Quitar favorito":"🤍 Favorito"}</button></div>`;
     list.appendChild(div);
   });
 }
 
-function playRadio(id) {
-  const radio = radios.find(r => r.id === id);
-  if (!radio || !radio.url) return alert("Esta emisora no tiene streaming válido.");
-  audio.src = radio.url;
+function playRadio(id){
+  const r=radios.find(x=>x.id===id);
+  audio.src=r.url;
   audio.play();
-  document.getElementById("player").style.display = "flex";
-  document.getElementById("playerTitle").textContent = radio.name;
+  document.getElementById("player").style.display="flex";
+  document.getElementById("playerTitle").textContent=r.name;
 }
 
-function togglePlay() {
-  if (!audio.src) return;
-  audio.paused ? audio.play() : audio.pause();
-}
+function togglePlay(){ if(!audio.src) return; audio.paused?audio.play():audio.pause(); }
 
-function toggleFav(id) {
-  const i = favs.indexOf(id);
-  if (i >= 0) favs.splice(i, 1); else favs.push(id);
-  localStorage.setItem("favs", JSON.stringify(favs));
+function toggleFav(id){
+  const i=favs.indexOf(id);
+  if(i>=0) favs.splice(i,1); else favs.push(id);
+  localStorage.setItem("favs",JSON.stringify(favs));
   render();
 }
 
-function deleteRadio(id) {
-  if (!confirm("¿Eliminar esta emisora de tu app?")) return;
-  removed.push(id);
-  localStorage.setItem("removed", JSON.stringify(removed));
-  radios = radios.filter(r => r.id !== id);
-  render();
-}
-
-function addRadio() {
-  const name = document.getElementById("newName").value.trim();
-  const com = document.getElementById("newCom").value.trim();
-  const prov = document.getElementById("newProv").value.trim();
-  const url = document.getElementById("newUrl").value.trim();
-
-  if (!name || !com || !prov || !url) {
-    alert("Rellena todos los campos");
-    return;
-  }
-
-  const id = Date.now();
-  const newRadio = { id, name, comunidad: com, provincia: prov, url, logo: "" };
-
-  customRadios.push(newRadio);
-  localStorage.setItem("customRadios", JSON.stringify(customRadios));
-
-  radios.push(newRadio);
-  initFilters();
-  render();
-
-  document.getElementById("newName").value = "";
-  document.getElementById("newCom").value = "";
-  document.getElementById("newProv").value = "";
-  document.getElementById("newUrl").value = "";
-}
-
-function initFilters() {
-  const comSelect = document.getElementById("comunidad");
-  comSelect.innerHTML = '<option value="">Comunidad</option>';
-  [...new Set(radios.map(r => r.comunidad))].sort().forEach(c => {
-    const opt = document.createElement("option");
-    opt.value = c;
-    opt.textContent = c;
-    comSelect.appendChild(opt);
-  });
-}
-
-function updateProvincias() {
-  const com = document.getElementById("comunidad").value;
-  const provSelect = document.getElementById("provincia");
-  provSelect.innerHTML = '<option value="">Provincia</option>';
-  [...new Set(radios.filter(r => r.comunidad === com).map(r => r.provincia))]
-    .sort().forEach(p => {
-      const opt = document.createElement("option");
-      opt.value = p;
-      opt.textContent = p;
-      provSelect.appendChild(opt);
-    });
-}
+render();
 </script>
 </body>
 </html>

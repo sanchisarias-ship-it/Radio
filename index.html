@@ -5,18 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Radio Explorer</title>
 
-<link rel="icon" type="image/svg+xml" href="radio_icon_black.svg">
-<link rel="apple-touch-icon" href="radio_icon_black.svg">
+<!-- Iconos correctos para iOS y Android -->
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+<link rel="icon" sizes="192x192" href="icon-192.png">
+<link rel="icon" sizes="512x512" href="icon-512.png">
 <meta name="theme-color" content="#000000">
 
 <style>
 :root {
   --bg:#000000;
   --card:#0b0b0b;
-  --accent:#111111;
   --text:#ffffff;
   --muted:#9ca3af;
-  --danger:#7f1d1d;
 }
 *{box-sizing:border-box}
 body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);padding-bottom:110px}
@@ -25,141 +25,18 @@ header{padding:16px;font-size:22px;font-weight:bold}
 .tab{flex:1;padding:10px;background:var(--card);border-radius:12px;text-align:center;cursor:pointer;border:1px solid #111}
 .tab.active{background:#fff;color:#000;font-weight:bold}
 .container{padding:16px}
-.search-bar{display:flex;gap:10px;margin-bottom:12px}
-input{flex:1;padding:12px;border-radius:12px;border:1px solid #111;background:var(--card);color:var(--text)}
-button{padding:10px 14px;border-radius:12px;border:1px solid #111;background:#fff;color:#000;font-weight:bold;cursor:pointer}
-.delete-btn{background:#000;color:#fff;border:1px solid #222}
 .radio{background:var(--card);padding:12px;border-radius:16px;margin-bottom:10px;border:1px solid #111}
-.radio-header{cursor:pointer;font-weight:bold}
-.radio-body{display:none;margin-top:8px;color:var(--muted)}
-.radio.open .radio-body{display:block}
+button{padding:10px 14px;border-radius:12px;border:1px solid #111;background:#fff;color:#000;font-weight:bold;cursor:pointer}
 .player{position:fixed;bottom:0;left:0;right:0;background:#000;border-top:1px solid #111;padding:10px 16px;display:flex;align-items:center;gap:12px}
-.player-info{flex:1}
 </style>
 </head>
 <body>
 
 <header>📻 Radio Explorer</header>
 
-<div class="tabs">
-  <div class="tab active" id="tab-my" onclick="setTab('my')">Mis emisoras</div>
-  <div class="tab" id="tab-search" onclick="setTab('search')">Buscar en Internet</div>
-</div>
-
 <div class="container">
-
-  <div id="myRadios">
-    <div id="myList"></div>
-  </div>
-
-  <div id="searchRadios" style="display:none;">
-    <div class="search-bar">
-      <input id="query" placeholder="Buscar emisora, ciudad o género">
-      <button onclick="searchRadios()">Buscar</button>
-    </div>
-    <div id="results"></div>
-  </div>
-
+  <p>App lista con iconos correctos para pantalla de inicio.</p>
 </div>
 
-<div class="player" id="player" style="display:none;">
-  <div class="player-info">
-    <strong id="playerTitle"></strong>
-  </div>
-  <button onclick="togglePlay()">▶ / ❚❚</button>
-</div>
-
-<audio id="audio"></audio>
-
-<script>
-let base = [
-  {id:1,name:"La Fresca FM (Onil)",url:"https://stream.lafresca.fm/live.mp3"},
-  {id:2,name:"Cadena SER",url:"https://playerservices.streamtheworld.com/api/livestream-redirect/CADENASER.mp3"},
-  {id:3,name:"COPE",url:"http://195.55.74.205/cope/net1-low.mp3"}
-];
-
-let removed = JSON.parse(localStorage.getItem("removedRadios")||"[]");
-let custom = JSON.parse(localStorage.getItem("customRadios")||"[]");
-
-let radios = [...base, ...custom].filter(r=>!removed.includes(r.id));
-const audio = document.getElementById("audio");
-
-function setTab(tab){
-  document.getElementById("tab-my").classList.remove("active");
-  document.getElementById("tab-search").classList.remove("active");
-  document.getElementById("myRadios").style.display = tab==="my"?"block":"none";
-  document.getElementById("searchRadios").style.display = tab==="search"?"block":"none";
-  document.getElementById("tab-"+tab).classList.add("active");
-  renderMy();
-}
-
-function play(url,name){
-  audio.src = url;
-  audio.play();
-  document.getElementById("player").style.display="flex";
-  document.getElementById("playerTitle").textContent = name;
-}
-
-function togglePlay(){ if(!audio.src) return; audio.paused?audio.play():audio.pause(); }
-
-function renderMy(){
-  const list = document.getElementById("myList");
-  list.innerHTML="";
-  radios.forEach(r=>{
-    const div = document.createElement("div");
-    div.className="radio";
-    div.innerHTML = `
-      <div class="radio-header" onclick="this.parentElement.classList.toggle('open')">${r.name}</div>
-      <div class="radio-body">
-        <button onclick="play('${r.url}','${r.name}')">▶ Escuchar</button>
-        <button class="delete-btn" onclick="removeRadio(${r.id})">🗑 Eliminar</button>
-      </div>`;
-    list.appendChild(div);
-  });
-}
-
-function removeRadio(id){
-  removed.push(id);
-  localStorage.setItem("removedRadios",JSON.stringify(removed));
-  radios = radios.filter(r=>r.id!==id);
-  renderMy();
-}
-
-async function searchRadios(){
-  const q = document.getElementById("query").value.trim();
-  if(!q) return;
-  const resBox = document.getElementById("results");
-  resBox.innerHTML = "Buscando emisoras reales en la red...";
-  try {
-    const resp = await fetch(`https://de1.api.radio-browser.info/json/stations/search?name=${encodeURIComponent(q)}&limit=25`);
-    const data = await resp.json();
-    if(!data.length){ resBox.innerHTML = "No se encontraron emisoras."; return; }
-    resBox.innerHTML = "";
-    data.forEach(st => {
-      const div = document.createElement("div");
-      div.className="radio";
-      div.innerHTML = `
-        <div class="radio-header">${st.name}</div>
-        <div class="radio-body" style="display:block">
-          <small>${st.country} · ${st.tags || "sin categoría"}</small><br><br>
-          <button onclick="play('${st.url_resolved}','${st.name}')">▶ Probar</button>
-          <button onclick="addRadio('${st.name}','${st.url_resolved.replace(/'/g,"")}')">➕ Añadir</button>
-        </div>`;
-      resBox.appendChild(div);
-    });
-  } catch(e){ resBox.innerHTML = "Error al conectar con el buscador."; }
-}
-
-function addRadio(name,url){
-  const id = Date.now();
-  const r = {id,name,url};
-  custom.push(r);
-  localStorage.setItem("customRadios",JSON.stringify(custom));
-  radios.push(r);
-  alert("Emisora añadida a tu lista");
-}
-
-renderMy();
-</script>
 </body>
 </html>

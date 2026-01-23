@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Radios locales de Alicante (zona Onil)</title>
+<title>Radios de España (principales + locales)</title>
 
 <style>
 :root {--bg:#0f172a;--card:#1e293b;--accent:#38bdf8;--text:#f1f5f9;--muted:#94a3b8;--danger:#ef4444;}
@@ -31,7 +31,7 @@ button{padding:10px 14px;border-radius:12px;border:none;background:var(--accent)
 </head>
 <body>
 
-<header>📻 Radios locales de Alicante (zona Onil)</header>
+<header>📻 Radios de España (estables)</header>
 
 <div class="tabs">
   <div class="tab active" id="tab-all" onclick="setTab('all')">Inicio</div>
@@ -58,22 +58,36 @@ button{padding:10px 14px;border-radius:12px;border:none;background:var(--accent)
 <audio id="audio"></audio>
 
 <script>
-// Puedes añadir logos colocando imágenes en una carpeta /logos
-// Ejemplo: logo:"logos/lafresca.png"
-
+// Lista curada de emisoras principales de España + algunas locales estables
 const radiosBase = [
-  {id:1,name:"La Fresca FM (Onil)",comunidad:"Comunitat Valenciana",provincia:"Alicante",url:"https://stream.lafresca.fm/live.mp3",logo:""},
-  {id:2,name:"Radio Alcoy (SER)",comunidad:"Comunitat Valenciana",provincia:"Alicante",url:"https://playerservices.streamtheworld.com/api/livestream-redirect/CADENASER.mp3",logo:""},
-  {id:3,name:"COPE Alcoy",comunidad:"Comunitat Valenciana",provincia:"Alicante",url:"http://195.55.74.205/cope/net1-low.mp3",logo:""},
-  {id:4,name:"Onda Cero Alcoy",comunidad:"Comunitat Valenciana",provincia:"Alicante",url:"https://icecast-streaming.nice264.com/ondacero",logo:""},
-  {id:5,name:"Radio Villena (SER)",comunidad:"Comunitat Valenciana",provincia:"Alicante",url:"https://playerservices.streamtheworld.com/api/livestream-redirect/CADENASER.mp3",logo:""},
-  {id:6,name:"COPE Villena",comunidad:"Comunitat Valenciana",provincia:"Alicante",url:"http://195.55.74.205/cope/net1-low.mp3",logo:""},
-  {id:7,name:"Radio Elda SER Vinalopó",comunidad:"Comunitat Valenciana",provincia:"Alicante",url:"https://playerservices.streamtheworld.com/api/livestream-redirect/CADENASER.mp3",logo:""},
-  {id:8,name:"COPE Elda Vinalopó",comunidad:"Comunitat Valenciana",provincia:"Alicante",url:"http://195.55.74.205/cope/net1-low.mp3",logo:""},
-  {id:9,name:"Onda Cero Elche",comunidad:"Comunitat Valenciana",provincia:"Alicante",url:"https://icecast-streaming.nice264.com/ondacero",logo:""},
-  {id:10,name:"Radio Elche (SER)",comunidad:"Comunitat Valenciana",provincia:"Alicante",url:"https://playerservices.streamtheworld.com/api/livestream-redirect/CADENASER.mp3",logo:""},
-  {id:11,name:"Radio San Vicente",comunidad:"Comunitat Valenciana",provincia:"Alicante",url:"https://streaming.radiosanvicente.com/directo.mp3",logo:""},
-  {id:12,name:"Radio UMH (Elche)",comunidad:"Comunitat Valenciana",provincia:"Alicante",url:"https://radio.umh.es/radio-directo/",logo:""}
+  // PRINCIPALES NACIONALES (muy estables)
+  {id:1,name:"Cadena SER",url:"https://playerservices.streamtheworld.com/api/livestream-redirect/CADENASER.mp3"},
+  {id:2,name:"COPE",url:"http://195.55.74.205/cope/net1-low.mp3"},
+  {id:3,name:"Onda Cero",url:"https://icecast-streaming.nice264.com/ondacero"},
+  {id:4,name:"RNE Radio 1",url:"https://rtve-mp3.flumotion.com/rne/rne1/mp3/rtve.mp3"},
+  {id:5,name:"RNE Radio 3",url:"https://rtve-mp3.flumotion.com/rne/radio3/mp3/rtve.mp3"},
+  {id:6,name:"RNE Radio 5",url:"https://rtve-mp3.flumotion.com/rne/radio5/mp3/rtve.mp3"},
+  {id:7,name:"Los40",url:"https://playerservices.streamtheworld.com/api/livestream-redirect/LOS40.mp3"},
+  {id:8,name:"Cadena Dial",url:"https://playerservices.streamtheworld.com/api/livestream-redirect/CADENADIAL.mp3"},
+  {id:9,name:"Cadena 100",url:"https://playerservices.streamtheworld.com/api/livestream-redirect/CADENA100.mp3"},
+  {id:10,name:"Europa FM",url:"https://live.europafm.com/live/europafm/master.m3u8"},
+  {id:11,name:"Kiss FM",url:"https://kp.radiocdn.com/kissfm.mp3"},
+  {id:12,name:"Radio Marca",url:"https://playerservices.streamtheworld.com/api/livestream-redirect/RADIOMARCA.mp3"},
+
+  // AUTONÓMICAS ESTABLES
+  {id:13,name:"RAC1 (Cataluña)",url:"https://playerservices.streamtheworld.com/api/livestream-redirect/RAC1.mp3"},
+  {id:14,name:"Catalunya Ràdio",url:"https://shoutcast.ccma.cat/ccma/catradio.mp3"},
+  {id:15,name:"Canal Sur Radio",url:"https://playerservices.streamtheworld.com/api/livestream-redirect/CANALSUR.mp3"},
+  {id:16,name:"À Punt Ràdio",url:"https://playerservices.streamtheworld.com/api/livestream-redirect/APUNTRADIO.mp3"},
+  {id:17,name:"Radio Euskadi",url:"https://playerservices.streamtheworld.com/api/livestream-redirect/RADIO_EUSKADI.mp3"},
+  {id:18,name:"Radio Galega",url:"https://playerservices.streamtheworld.com/api/livestream-redirect/RADIO_GALICIA.mp3"},
+  {id:19,name:"IB3 Ràdio",url:"https://playerservices.streamtheworld.com/api/livestream-redirect/IB3RADIO.mp3"},
+  {id:20,name:"Radio Canaria",url:"https://playerservices.streamtheworld.com/api/livestream-redirect/RADIOCANARIA.mp3"},
+
+  // LOCALES CURADAS (zona usuario)
+  {id:21,name:"La Fresca FM (Onil)",url:"https://stream.lafresca.fm/live.mp3"},
+  {id:22,name:"Radio San Vicente",url:"https://streaming.radiosanvicente.com/directo.mp3"},
+  {id:23,name:"Onda Regional Murcia",url:"https://streaming.orm.es/live.mp3"}
 ];
 
 let removed = JSON.parse(localStorage.getItem("removedRadios") || "[]");
@@ -110,11 +124,9 @@ function render(){
     div.className="radio";
     div.innerHTML=`
       <div class="radio-header" onclick="this.parentElement.classList.toggle('open')">
-        ${r.logo ? `<img src="${r.logo}" alt="${r.name}">` : `<div style="width:42px;height:42px;border-radius:8px;background:#020617;display:flex;align-items:center;justify-content:center;font-size:18px;">📻</div>`}
         <strong>${r.name}</strong>
       </div>
       <div class="radio-body">
-        <p>${r.comunidad} · ${r.provincia}</p>
         <button onclick="playRadio(${r.id})">▶ Escuchar</button>
         <button onclick="toggleFav(${r.id})">${favs.includes(r.id)?"❤️ Quitar favorito":"🤍 Favorito"}</button>
         <button class="delete-btn" onclick="deleteRadio(${r.id})">🗑 Eliminar</button>
@@ -126,7 +138,7 @@ function render(){
 
 function playRadio(id){
   const r=radios.find(x=>x.id===id);
-  if(!r || !r.url){ alert("Esta emisora no tiene streaming válido"); return; }
+  if(!r || !r.url){ alert("Stream no disponible"); return; }
   audio.src=r.url;
   audio.play();
   document.getElementById("player").style.display="flex";
